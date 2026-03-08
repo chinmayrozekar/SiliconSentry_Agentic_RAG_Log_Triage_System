@@ -51,7 +51,9 @@ class LogParser:
                 
                 # Intelligence: Detect Severity
                 severity = "INFO"
-                if any(x in clean_line.upper() for x in ["ERROR", "FAIL", "CRITICAL", "FATAL"]):
+                if any(x in clean_line.upper() for x in ["CRITICAL", "FATAL"]):
+                    severity = "CRITICAL"
+                elif any(x in clean_line.upper() for x in ["ERROR", "FAIL"]):
                     severity = "ERROR"
                 elif "WARN" in clean_line.upper():
                     severity = "WARNING"

@@ -4,7 +4,7 @@
 [![Log Parsing](https://img.shields.io/badge/Parser-Drain3-green)](https://github.com/logpai/drain3)
 [![Vector DB](https://img.shields.io/badge/VectorDB-FAISS-orange)](https://github.com/facebookresearch/faiss)
 
-An automated, production-ready debugging agent designed for high-throughput environments (Semiconductors, Network Infrastructure, Cloud Ops). This system eliminates manual log scrolling by standardizing raw logs, cross-references errors against official technical documentation, and generates verifiable root-cause reports.
+An automated, production-ready debugging agent designed for high-throughput environments (Semiconductors, Network Infrastructure, Cloud Ops). This system eliminates manual log scrolling by standardizing raw logs, cross-referencing errors against official technical documentation, and generating verifiable root-cause reports.
 
 ---
 
@@ -14,44 +14,45 @@ Our goal is to create a deterministic pipeline that bridges the gap between unst
 
 ```mermaid
 graph TD
-    subgraph "Knowledge Base (Phase 2)"
+    subgraph "Knowledge Base (Phase 3)"
         A[Technical Manuals PDF] -->|LangChain| B[Text Chunks]
         B -->|Embeddings| C[(FAISS Vector Index)]
     end
 
-    subgraph "Log Extraction (Phase 1)"
+    subgraph "Log Extraction (Phase 1 and 2)"
         D[Raw System Logs] -->|Drain3 Miner| E[Static Log Template]
-        D -->|Regex Masking| F[Dynamic Variables]
+        D -->|Parallel Processing| F[Multi-Core Chunks]
+        D -->|Regex Masking| G[Dynamic Variables]
     end
 
-    subgraph "Agentic Synthesis"
+    subgraph "Agentic Synthesis (Phase 4)"
         E -->|Vector Search| C
-        C -->|Context| G[Retrieved Documentation]
-        G --> H{"Gemini CLI Agent"}
-        F --> H
-        H -->|Analysis| I[Actionable Markdown Report]
+        C -->|Context| H[Retrieved Documentation]
+        H --> I{"Gemini CLI Agent"}
+        G --> I
+        I -->|Analysis| J[Actionable Markdown Report]
     end
 ```
 
 ---
 
-## Core AI Concepts: The "Why"
+## Core AI Concepts: The Why
 
 ### 1. Template Mining (Drain3)
-Standard RegEx is brittle and fails in high-throughput environments where log formats change frequently. We use Drain3, an online log parsing approach using a fixed-depth tree. It automatically discovers the "skeleton" (template) of a log message while masking dynamic variables (IPs, Hex codes, IDs).
-*   **Why?** It turns millions of noisy log lines into a few dozen unique "event types," making downstream analysis 100x faster.
+Standard RegEx is brittle and fails in high-throughput environments where log formats change frequently. We use Drain3, an online log parsing approach using a fixed-depth tree. It automatically discovers the skeleton (template) of a log message while masking dynamic variables (IPs, Hex codes, IDs).
+* Why? It turns millions of noisy log lines into a few dozen unique event types, making downstream analysis 100x faster.
 
-### 2. Retrieval-Augmented Generation (RAG)
-LLMs are prone to "hallucinations" (making up technical fixes that don't exist). We use RAG to ground the AI in reality. By storing official technical manuals in a FAISS Vector Database, we force the AI to only suggest fixes found in the actual documentation.
-*   **Why?** High-stakes environments (like semiconductor testing) require verifiable fixes, not creative guesses.
+### 2. Intelligent Parallelism
+For massive log files (80GB+), traditional file loading will crash a system. Our parser implements resource-aware multiprocessing. It partitions files into byte-offset chunks and processes them across all available CPU cores.
+* Why? This ensures 100% coverage of proprietary logs at maximum hardware speed while maintaining a constant memory footprint (less than 100MB usage).
 
-### 3. Memory-Safe Streaming
-For massive log files (80GB+), traditional file loading will crash a system. Our parser is built as a Python Generator, meaning it only ever holds one line of text and the template tree in memory. 
-*   **Why?** This ensures 100% coverage of proprietary logs without exceeding standard system RAM (less than 100MB usage).
+### 3. Retrieval-Augmented Generation (RAG)
+LLMs are prone to hallucinations (making up technical fixes that don't exist). We use RAG to ground the AI in reality. By storing official technical manuals in a FAISS Vector Database, we force the AI to only suggest fixes found in the actual documentation.
+* Why? High-stakes environments require verifiable fixes, not creative guesses.
 
 ---
 
-## Installation & Setup
+## Installation and Setup
 
 ```bash
 # Clone the repository
@@ -69,38 +70,47 @@ export PYTHONPATH=$PYTHONPATH:.
 
 ## Usage Examples
 
-### 1. Ingest Technical Manuals (Phase 2)
-Process a PDF manual into searchable semantic chunks stored in FAISS.
+### 1. Generate Realistic Test Data
+Generate high-fidelity industrial logs for testing (EDA simulations or SLT Benchmarks).
+```bash
+# Generate 60MB Hierarchical PERC DRC Log
+python3 src/eda_log_generator.py
+
+# Generate 100MB SLT CPU/GPU/Peripheral Benchmark Log
+python3 src/slt_log_generator.py
+```
+
+### 2. Intelligent Triage and Parsing
+Run the parallel Drain3 miner to identify unique log signatures with severity filtering and density ranking.
+```bash
+# Parse only CRITICAL failures from a 100MB SLT log
+python3 src/main.py parse --file data/raw_logs/slt_benchmark_100mb.log --severity CRITICAL
+
+# Parse all ERROR and WARNING trends from an EDA log
+python3 src/main.py parse --file data/raw_logs/perc_drc_hierarchical.log --severity ERROR,WARNING
+```
+
+### 3. Ingest Technical Manuals
+Process PDF manuals into searchable semantic chunks stored in FAISS.
 ```bash
 python3 src/main.py ingest --file docs/manuals/yosys_manual.pdf
-```
-
-### 2. Generate Realistic Test Data
-Generate a 10MB log file with diverse templates (INFO, ERROR, CRITICAL) and dynamic data (IPs, Hex codes).
-```bash
-python3 src/main.py generate-logs --file data/raw_logs/system_test.log --size 10
-```
-
-### 3. Parse and Extract Templates (Phase 1)
-Run the memory-safe Drain3 miner to identify unique log signatures.
-```bash
-python3 src/main.py parse --file data/raw_logs/system_test.log
 ```
 
 ---
 
 ## Roadmap
 
-- [x] Phase 1: Log Extraction (Drain3 Implementation, Memory-Safe Streaming)
-- [x] Phase 2: Knowledge Ingestion (PDF Loader, FAISS Vector Index integration)
-- [ ] Phase 3: Agentic Synthesis (Gemini CLI integration for automated report generation)
-- [ ] Phase 4: Deployment (PyInstaller Binary for standalone terminal usage)
+- [x] Phase 1: Log Extraction (Drain3 Implementation, Template Discovery)
+- [x] Phase 2: High-Performance Triage (Resource-Aware Parallelism, Severity Filtering, Density Ranking)
+- [x] Phase 3: Knowledge Ingestion (PDF Loader, FAISS Vector Index integration)
+- [ ] Phase 4: Agentic Synthesis (Gemini CLI integration for automated report generation)
+- [ ] Phase 5: Deployment (PyInstaller Binary for standalone terminal usage)
 
 ---
 
 ## Acknowledgments
 
-This project was built and architected in collaboration with Google Gemini CLI. The entire development lifecycle (from environment setup to the implementation of the Drain3 parser and this documentation) was assisted by Generative AI to ensure production-grade standards and idiomatic Python patterns.
+This project was built and architected in collaboration with Google Gemini CLI. The entire development lifecycle (from environment setup to the implementation of the multi-core parser and this documentation) was assisted by Generative AI to ensure production-grade standards and idiomatic Python patterns.
 
 ---
 
