@@ -1,4 +1,4 @@
-# Agentic RAG Log Triage System 🚀
+# Agentic RAG Log Triage System
 
 [![AI Framework](https://img.shields.io/badge/AI-Gemini%20CLI-blue)](https://github.com/google/gemini-cli)
 [![Log Parsing](https://img.shields.io/badge/Parser-Drain3-green)](https://github.com/logpai/drain3)
@@ -8,9 +8,9 @@ An automated, production-ready debugging agent designed for high-throughput envi
 
 ---
 
-## 🏛 Architecture Overview
+## Architecture Overview
 
-Our goal is to create a deterministic pipeline that bridges the gap between **unstructured telemetry** and **structured technical knowledge**.
+Our goal is to create a deterministic pipeline that bridges the gap between unstructured telemetry and structured technical knowledge.
 
 ```mermaid
 graph TD
@@ -35,24 +35,24 @@ graph TD
 
 ---
 
-## 🧠 Core AI Concepts: The "Why"
+## Core AI Concepts: The "Why"
 
 ### 1. Template Mining (Drain3)
-Standard RegEx is brittle and fails in high-throughput environments where log formats change frequently. We use **Drain3**, an online log parsing approach using a fixed-depth tree. It automatically discovers the "skeleton" (template) of a log message while masking dynamic variables (IPs, Hex codes, IDs).
+Standard RegEx is brittle and fails in high-throughput environments where log formats change frequently. We use Drain3, an online log parsing approach using a fixed-depth tree. It automatically discovers the "skeleton" (template) of a log message while masking dynamic variables (IPs, Hex codes, IDs).
 *   **Why?** It turns millions of noisy log lines into a few dozen unique "event types," making downstream analysis 100x faster.
 
 ### 2. Retrieval-Augmented Generation (RAG)
-LLMs are prone to "hallucinations"—making up technical fixes that don't exist. We use **RAG** to ground the AI in reality. By storing official technical manuals in a **Chroma Vector Database**, we force the AI to only suggest fixes found in the actual documentation.
-*   **Why?** High-stakes environments (like semiconductor testing) require **verifiable** fixes, not creative guesses.
+LLMs are prone to "hallucinations" (making up technical fixes that don't exist). We use RAG to ground the AI in reality. By storing official technical manuals in a Chroma Vector Database, we force the AI to only suggest fixes found in the actual documentation.
+*   **Why?** High-stakes environments (like semiconductor testing) require verifiable fixes, not creative guesses.
 
 ### 3. Agentic Synthesis
-Unlike a simple chatbot, an **Agent** uses the extracted variables (like a specific Error Code `0x4A2B`) and the retrieved documentation to reason through the failure. It acts as a senior engineer, synthesizing a final report that includes the *Root Cause*, *Relevant Docs*, and *Actionable Steps*.
+Unlike a simple chatbot, an Agent uses the extracted variables (like a specific Error Code 0x4A2B) and the retrieved documentation to reason through the failure. It acts as a senior engineer, synthesizing a final report that includes the Root Cause, Relevant Docs, and Actionable Steps.
 
 ---
 
-## 🛠 Phase 1: Log Parsing (Current)
+## Phase 1: Log Parsing (Current)
 
-The first phase focus is on the **Log Extraction** engine. It can ingest massive log files and output a summarized view of all unique events.
+The first phase focus is on the Log Extraction engine. It can ingest massive log files and output a summarized view of all unique events.
 
 ### Installation & Setup
 ```bash
@@ -87,18 +87,18 @@ python3 src/main.py parse --file data/raw_logs/system_test.log
 
 ---
 
-## 🚀 Roadmap
+## Roadmap
 
-- [x] **Phase 1: Log Extraction** (Drain3 Implementation, CLI Interface, Mock Generator)
-- [ ] **Phase 2: Knowledge Ingestion** (PDF Loader, ChromaDB Vector Store integration)
-- [ ] **Phase 3: Agentic Synthesis** (Gemini CLI integration for automated report generation)
-- [ ] **Phase 4: Deployment** (PyInstaller Binary for standalone terminal usage)
+- [x] Phase 1: Log Extraction (Drain3 Implementation, CLI Interface, Mock Generator)
+- [ ] Phase 2: Knowledge Ingestion (PDF Loader, ChromaDB Vector Store integration)
+- [ ] Phase 3: Agentic Synthesis (Gemini CLI integration for automated report generation)
+- [ ] Phase 4: Deployment (PyInstaller Binary for standalone terminal usage)
 
 ---
 
-## 🤝 Acknowledgments
+## Acknowledgments
 
-This project was built and architected in collaboration with **Google Gemini CLI**. The entire development lifecycle—from environment setup to the implementation of the Drain3 parser and this documentation—was assisted by Generative AI to ensure production-grade standards and idiomatic Python patterns.
+This project was built and architected in collaboration with Google Gemini CLI. The entire development lifecycle (from environment setup to the implementation of the Drain3 parser and this documentation) was assisted by Generative AI to ensure production-grade standards and idiomatic Python patterns.
 
 ---
 

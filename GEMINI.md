@@ -24,7 +24,7 @@
 - The local Python environment acts as the central router. It hands data between the local file system, the Chroma database, and the Gemini CLI.
 
 # Additional Guidelines:
-  - This project is inpired by [Medical Asistant RAG](Project_5_MedicalAssistant_Full_Code_NLP_RAG_ChinmayRozekar_CLEANED.ipynb) jupiter notebook
+  - This project is inspired by [Medical Assistant RAG](Project_5_MedicalAssistant_Full_Code_NLP_RAG_ChinmayRozekar_CLEANED.ipynb) jupyter notebook
   - The aim of this project is to implement a solution something like this but for production quality software.
   - We will not use any jupyter nb
   - we will most likely need to set up a .venv for this project
