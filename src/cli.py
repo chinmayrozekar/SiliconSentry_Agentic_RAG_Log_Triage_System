@@ -1,5 +1,6 @@
 import click
 import os
+import multiprocessing
 from src.dummy_log_generator_file import create_dummy_logs
 from src.parser import LogParser
 from src.ingestion import KnowledgeBase
@@ -20,21 +21,19 @@ def generate_logs(file, size):
 @cli.command()
 @click.option('--file', required=True, help='Path to the log file to parse.')
 def parse(file):
-    """Parse a log file using Drain3 to extract templates."""
+    """Parse a log file using Parallel Drain3 to extract templates."""
     if not os.path.exists(file):
         click.echo(f"Error: File {file} not found.")
         return
 
-    click.echo(f"Parsing log file: {file}...")
+    cpu_count = multiprocessing.cpu_count()
+    click.echo(f"Parsing log file in parallel ({cpu_count} cores): {file}...")
     parser = LogParser()
-    # Handle the generator output
-    for result in parser.parse_file(file):
-        pass # We just want the summary for now
+    summary = parser.parse_file_parallel(file)
     
-    summary = parser.get_summary()
     click.echo(f"\nDiscovered {len(summary)} Unique Log Templates:\n")
-    for s in summary:
-        click.echo(f"ID {s['id']} (Count: {s['count']}): {s['template']}")
+    for i, (template, count) in enumerate(summary.items(), 1):
+        click.echo(f"ID {i} (Count: {count}): {template}")
 
 @cli.command()
 @click.option('--file', required=True, help='Path to the PDF technical manual.')
