@@ -1,12 +1,15 @@
 import warnings
 import sys
+import multiprocessing
+
+# MUST be called at the very top for PyInstaller + Multiprocessing support
+if __name__ == "__main__":
+    multiprocessing.freeze_support()
 
 # Silence specific library warnings for a cleaner CLI experience
-# MUST be done before importing libraries that trigger them
 warnings.filterwarnings("ignore", message="Core Pydantic V1 functionality")
 warnings.filterwarnings("ignore", message="Unable to find acceptable character detection dependency")
 
-# Optional: Silence InsecureRequestWarning if using unverified HTTPS anywhere
 try:
     import requests
     from urllib3.exceptions import InsecureRequestWarning
