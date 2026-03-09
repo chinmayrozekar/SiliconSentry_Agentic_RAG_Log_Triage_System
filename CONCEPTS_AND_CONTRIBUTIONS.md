@@ -20,7 +20,7 @@ I moved away from traditional Search (grep/awk) because it requires knowing what
 ### 2. Retrieval-Augmented Generation (RAG)
 I architected a **RAG Pipeline** to ensure that any AI-generated advice is grounded in official technical truth.
 * **Concept:** Instead of letting an LLM guess a fix, I store technical manuals in a vector space. The system retrieves the most relevant documentation before the LLM even sees the error.
-* **My Decision:** I mandated a "Local-First" RAG approach to protect proprietary data and ensure the system remains deterministic and verifiable by human engineers.
+* **My Decision:** I mandated a **Local-First Sovereign AI** approach. By using **Ollama**, I ensured that proprietary data never leaves the local machine, providing 100% data sovereignty and zero network latency.
 
 ### 3. Vector Embeddings and Semantic Search
 I implemented **Semantic Search** to find meaning rather than just matching keywords.
@@ -30,7 +30,7 @@ I implemented **Semantic Search** to find meaning rather than just matching keyw
 ### 4. Agentic Synthesis (The Reasoning Layer)
 I implemented an **Autonomous Agent** to act as the final synthesis layer of the system.
 * **Concept:** The agent uses the retrieved documentation and the discovered log variables to reason through the failure. It doesn't just chat; it performs technical deduction to explain the root cause and provide fix steps.
-* **My Decision:** I integrated the Google Gemini model via the raw SDK to ensure maximum stability and leveraged custom prompt engineering to force the model to adopt a professional "Senior Debug Engineer" persona.
+* **My Decision:** I pivoted the system to use **Ollama (Llama 3)** to eliminate dependencies on unstable cloud APIs and ensure the tool remains operational in secure, air-gapped industrial environments.
 
 ---
 
@@ -42,28 +42,28 @@ I hand-picked each library in this stack to ensure production-grade performance 
 * **Why I chose it:** It is the industry standard for online log parsing. I required an algorithm that could learn templates in real-time without needing to see the whole 80GB file first.
 
 ### 2. FAISS (Facebook AI Similarity Search)
-* **Why I chose it:** I hit a critical environment bottleneck with ChromaDB on Python 3.14. I made the executive decision to pivot to **FAISS**. It is a high-performance C++ backend that is significantly faster and more stable for local vector storage on M4 Mac hardware.
+* **Why I chose it:** I made the executive decision to pivot to **FAISS**. It is a high-performance C++ backend that is significantly faster and more stable for local vector storage on M4 Mac hardware than alternatives like ChromaDB.
 
 ### 3. LangChain (The Orchestration Framework)
 * **Why I chose it:** I used LangChain as the "glue" for my RAG pipeline. Specifically, I utilized its document loaders and text splitters to handle the complex formatting of technical PDFs.
 
-### 4. Sentence-Transformers (My Embedding Engine)
-* **Why I chose it:** I selected the `all-MiniLM-L6-v2` model. It provides the perfect balance between high embedding accuracy and low compute overhead, ensuring my M4 cores aren't pegged just during the search phase.
+### 4. Ollama (Local LLM Execution)
+* **Why I chose it:** I integrated Ollama to power the Agentic Synthesis layer. This move was strategic: it provides ultra-fast local inference, removes API costs, and ensures the tool is immune to cloud service outages.
 
-### 5. Google GenAI SDK (My Intelligence Engine)
-* **Why I chose it:** To ensure my Agentic layer was robust against versioning issues in wrapper libraries, I implemented the final synthesis using the raw Google GenAI SDK. This allowed me to implement custom retry logic and exponential backoff to handle free-tier API rate limits in a production-safe way.
-
-### 6. Multiprocessing (My Parallelism Engine)
+### 5. Multiprocessing (My Parallelism Engine)
 * **Why I chose it:** To handle 80GB files, I architected a custom parallel wrapper around the parser. I used the `multiprocessing` library to bypass Python's Global Interpreter Lock (GIL), allowing the tool to scale linearly with the core count of any machine it's deployed on.
+
+### 6. PyInstaller (Deployment Architecture)
+* **Why I chose it:** I mandated a **Directory-based distribution (`--onedir`)**. While a single-file binary is portable, it introduces an unacceptable startup delay due to decompression. By choosing `--onedir`, I ensured the application starts instantly, meeting industrial performance standards.
 
 ---
 
 ## My Leadership and Guidance Summary
 
-Throughout this project, I have managed the "Agent" as an execution layer while I maintained strict control over the roadmap:
-1. **Problem Scoping:** I defined the specific challenges of EDA and SLT logs.
-2. **Resource Management:** I rejected memory-heavy implementations in favor of my "Memory-Safe Streaming" requirement.
-3. **Environment Management:** I navigated the complexities of the Python 3.14 rollout, making the necessary pivots to FAISS to maintain project velocity.
-4. **Agentic Direction:** I guided the implementation of the final synthesis agent, ensuring its outputs were professional, grounded, and actionable.
+Throughout this project, I have managed the development roadmap with a focus on scale, privacy, and speed:
+1. **Data Sovereignty:** I enforced a strict local-only policy, removing all cloud API dependencies.
+2. **Resource Optimization:** I rejected memory-heavy implementations in favor of my "Memory-Safe Streaming" requirement.
+3. **Infrastructure Leadership:** I navigated the Python 3.14 environment challenges, making the necessary pivots to FAISS and Ollama to ensure a robust system.
+4. **Actionable Intelligence:** I directed the implementation of Severity Filtering and Density Ranking to transform a raw log stream into an engineering dashboard.
 
 **I have transformed a complex AI research concept into a stable, scalable, and professional engineering product.**
