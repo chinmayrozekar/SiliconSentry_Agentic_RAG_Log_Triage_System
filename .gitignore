@@ -154,3 +154,8 @@ data/chroma_db/
 data/raw_logs/*.log
 *.ipynb
 GEMINI.md
+
+# PyInstaller Build Artifacts
+build/
+dist/
+*.spec
