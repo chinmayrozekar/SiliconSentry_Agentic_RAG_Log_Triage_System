@@ -63,7 +63,7 @@ The final layer uses a local AI Agent (via Ollama) to act as a Senior Systems En
 ### Prerequisites
 Install [Ollama](https://ollama.com/) and pull the required model:
 ```bash
-ollama pull llama3
+ollama pull qwen2.5-coder:7b
 ```
 
 ### Option 1: Standalone Binary (Fastest)
@@ -77,8 +77,8 @@ Download the `SiliconSentry` folder and run the executable directly from your te
 ### Option 2: Development Setup (Source)
 ```bash
 # Clone and Setup
-git clone https://github.com/chinmayrozekar/Log_Parsing_Tool.git
-cd Log_Parsing_Tool
+git clone https://github.com/chinmayrozekar/SiliconSentry_Agentic_RAG_Log_Triage_System.git
+cd SiliconSentry_Agentic_RAG_Log_Triage_System
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
