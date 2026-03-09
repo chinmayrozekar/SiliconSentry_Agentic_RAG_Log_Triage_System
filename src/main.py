@@ -2,12 +2,16 @@ import warnings
 import sys
 
 # Silence specific library warnings for a cleaner CLI experience
+# MUST be done before importing libraries that trigger them
 warnings.filterwarnings("ignore", message="Core Pydantic V1 functionality")
-# Silence Requests/Charset dependency warning
+warnings.filterwarnings("ignore", message="Unable to find acceptable character detection dependency")
+
+# Optional: Silence InsecureRequestWarning if using unverified HTTPS anywhere
 try:
     import requests
     from urllib3.exceptions import InsecureRequestWarning
-    requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+    if hasattr(requests, 'packages'):
+        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 except Exception:
     pass
 
