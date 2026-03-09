@@ -12,22 +12,22 @@ SiliconSentry is an automated, production-ready debugging agent designed for hig
 
 ## Architecture Overview
 
-Our goal is to create a deterministic pipeline that bridges the gap between unstructured telemetry and structured technical knowledge.
+My goal is to create a deterministic pipeline that bridges the gap between unstructured telemetry and structured technical knowledge.
 
 ```mermaid
 graph TD
-    subgraph "Knowledge Base (Phase 3)"
+    subgraph "Knowledge Base "
         A[Technical Manuals PDF] -->|LangChain| B[Text Chunks]
         B -->|Embeddings| C[(FAISS Vector Index)]
     end
 
-    subgraph "Log Extraction (Phase 1 and 2)"
+    subgraph "Log Extraction "
         D[Raw System Logs] -->|Drain3 Miner| E[Static Log Template]
         D -->|Parallel Processing| F[Multi-Core Chunks]
         D -->|Regex Masking| G[Dynamic Variables]
     end
 
-    subgraph "Local Agentic Synthesis (Phase 4)"
+    subgraph "Local Agentic Synthesis "
         E -->|Vector Search| C
         C -->|Context| H[Retrieved Documentation]
         H --> I{"Local LLM Agent (Ollama)"}
@@ -41,15 +41,15 @@ graph TD
 ## Core AI Concepts: The Why
 
 ### 1. Template Mining (Drain3)
-Standard RegEx is brittle and fails in high-throughput environments where log formats change frequently. We use Drain3, an online log parsing approach using a fixed-depth tree. It automatically discovers the skeleton (template) of a log message while masking dynamic variables (IPs, Hex codes, IDs).
+Standard RegEx is brittle and fails in high-throughput environments where log formats change frequently. I use Drain3, a real-time, local log parsing approach using a fixed-depth tree. It automatically discovers the skeleton (template) of a log message while masking dynamic variables (IPs, Hex codes, IDs).
 * Why? It turns millions of noisy log lines into a few dozen unique event types, making downstream analysis 100x faster.
 
 ### 2. Intelligent Parallelism
-For massive log files (80GB+), traditional file loading will crash a system. Our parser implements resource-aware multiprocessing. It partitions files into byte-offset chunks and processes them across all available CPU cores.
+For massive log files (capable of scaling to 80GB+ through data replication), traditional file loading will crash a system. My parser implements resource-aware multiprocessing. It partitions files into byte-offset chunks and processes them across all available CPU cores.
 * Why? This ensures 100% coverage of proprietary logs at maximum hardware speed while maintaining a constant memory footprint (less than 100MB usage).
 
 ### 3. Local Retrieval-Augmented Generation (RAG)
-LLMs are prone to hallucinations (making up technical fixes that don't exist). We use RAG to ground the AI in reality. By storing official technical manuals in a FAISS Vector Database, we force the AI to only suggest fixes found in the actual documentation.
+LLMs are prone to hallucinations (making up technical fixes that don't exist). I use RAG to ground the AI in reality. By storing official technical manuals in a FAISS Vector Database, I force the AI to only suggest fixes found in the actual documentation.
 * Why? High-stakes environments (like semiconductor testing) require verifiable fixes, not creative guesses.
 
 ### 4. Sovereign AI Agent

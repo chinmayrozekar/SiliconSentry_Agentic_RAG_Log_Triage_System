@@ -6,7 +6,7 @@ This document details my engineering strategy, the AI/ML concepts I've implement
 
 ## My Architectural Vision
 
-I identified a critical bottleneck in semiconductor and systems engineering: the manual analysis of massive (80GB+) telemetry logs. I architected this system to bridge the gap between unstructured big data and actionable intelligence by combining deterministic template mining with Retrieval-Augmented Generation (RAG).
+I identified a critical bottleneck in semiconductor and systems engineering: the manual analysis of massive telemetry logs (which can reach 80GB+ in production). I architected this system to scale to these sizes through data replication and parallel processing, bridging the gap between unstructured big data and actionable intelligence by combining deterministic template mining with Retrieval-Augmented Generation (RAG).
 
 ---
 
@@ -14,7 +14,7 @@ I identified a critical bottleneck in semiconductor and systems engineering: the
 
 ### 1. Template Mining (The Discovery Layer)
 I moved away from traditional Search (grep/awk) because it requires knowing what to look for. Instead, I implemented **Template Mining** via the Drain3 algorithm. 
-* **Concept:** I use a fixed-depth parse tree to discover the logical structure of a log line. By tokenizing messages and grouping similar ones, I can collapse 800 million lines of noise into roughly 150 unique event types.
+* **Concept:** I use a fixed-depth parse tree to discover the logical structure of a log line. By tokenizing messages and grouping similar ones, I can collapse millions of lines of noise into roughly unique event types.
 * **My Decision:** I chose this to solve the "Semantic Gap"—turning raw text into a structured database of events without writing a single fragile Regular Expression.
 
 ### 2. Retrieval-Augmented Generation (RAG)
@@ -39,7 +39,7 @@ I implemented an **Autonomous Agent** to act as the final synthesis layer of the
 I hand-picked each library in this stack to ensure production-grade performance and cross-platform stability.
 
 ### 1. Drain3 (Implementation of my Template Miner)
-* **Why I chose it:** It is the industry standard for online log parsing. I required an algorithm that could learn templates in real-time without needing to see the whole 80GB file first.
+* **Why I chose it:** It is the industry standard for real-time, local log parsing. I required an algorithm that could learn templates in real-time without needing to see the whole 80GB file first.
 
 ### 2. FAISS (Facebook AI Similarity Search)
 * **Why I chose it:** I made the executive decision to pivot to **FAISS**. It is a high-performance C++ backend that is significantly faster and more stable for local vector storage on M4 Mac hardware than alternatives like ChromaDB.
@@ -51,7 +51,7 @@ I hand-picked each library in this stack to ensure production-grade performance 
 * **Why I chose it:** I integrated Ollama to power the Agentic Synthesis layer. This move was strategic: it provides ultra-fast local inference, removes API costs, and ensures the tool is immune to cloud service outages.
 
 ### 5. Multiprocessing (My Parallelism Engine)
-* **Why I chose it:** To handle 80GB files, I architected a custom parallel wrapper around the parser. I used the `multiprocessing` library to bypass Python's Global Interpreter Lock (GIL), allowing the tool to scale linearly with the core count of any machine it's deployed on.
+* **Why I chose it:** To handle massive files (capable of scaling to 80GB+), I architected a custom parallel wrapper around the parser. I used the `multiprocessing` library to bypass Python's Global Interpreter Lock (GIL), allowing the tool to scale linearly with the core count of any machine it's deployed on.
 
 ### 6. PyInstaller (Deployment Architecture)
 * **Why I chose it:** I mandated a **Directory-based distribution (`--onedir`)**. While a single-file binary is portable, it introduces an unacceptable startup delay due to decompression. By choosing `--onedir`, I ensured the application starts instantly, meeting industrial performance standards.
