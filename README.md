@@ -1,10 +1,10 @@
-# SiliconSentry: Agentic RAG Log Triage System
+# triagent: Agentic RAG Log Triage System
 
 [![AI Framework](https://img.shields.io/badge/AI-Ollama-blue)](https://ollama.com/)
 [![Log Parsing](https://img.shields.io/badge/Parser-Drain3-green)](https://github.com/logpai/drain3)
 [![Vector DB](https://img.shields.io/badge/VectorDB-FAISS-orange)](https://github.com/facebookresearch/faiss)
 
-SiliconSentry is an automated, production-ready debugging agent designed for high-throughput environments (Semiconductors, Network Infrastructure, Cloud Ops). This system eliminates manual log scrolling by standardizing raw logs, cross-references errors against official technical documentation, and generates verifiable root-cause reports.
+triagent is an automated, production-ready debugging agent designed for high-throughput environments (Semiconductors, Network Infrastructure, Cloud Ops). This system eliminates manual log scrolling by standardizing raw logs, cross-references errors against official technical documentation, and generates verifiable root-cause reports.
 
 **Note: This system runs 100% locally for maximum data sovereignty and zero latency.**
 
@@ -67,18 +67,18 @@ ollama pull qwen2.5-coder:7b
 ```
 
 ### Option 1: Standalone Binary (Fastest)
-Download the `SiliconSentry` folder and run the executable directly from your terminal. No Python installation is required.
+Download the `triagent` folder and run the executable directly from your terminal. No Python installation is required.
 
 ```bash
 # Run the tool (Instant Start)
-./SiliconSentry/SiliconSentry --help
+./triagent/triagent --help
 ```
 
 ### Option 2: Development Setup (Source)
 ```bash
 # Clone and Setup
-git clone https://github.com/chinmayrozekar/SiliconSentry_Agentic_RAG_Log_Triage_System.git
-cd SiliconSentry_Agentic_RAG_Log_Triage_System
+git clone https://github.com/chinmayrozekar/triagent.git
+cd triagent
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -123,7 +123,7 @@ python3 src/main.py analyze --file data/raw_logs/perc_drc_hierarchical.log
 To compile the source code into a high-performance directory distribution:
 ```bash
 pip install pyinstaller
-pyinstaller --noconfirm --onedir --console --add-data "drain3.ini:." --hidden-import charset_normalizer --name SiliconSentry src/main.py
+pyinstaller --noconfirm --onedir --console --add-data "drain3.ini:." --hidden-import charset_normalizer --name triagent src/main.py
 ```
 
 ---
